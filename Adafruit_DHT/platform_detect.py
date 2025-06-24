@@ -19,43 +19,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# This is a direct copy of what's in the Adafruit Python GPIO library:
+# This is (NOT ANYMORE) a direct copy of what's in the Adafruit Python GPIO library:
 #  https://raw.githubusercontent.com/adafruit/Adafruit_Python_GPIO/master/Adafruit_GPIO/Platform.py
 # TODO: Add dependency on Adafruit Python GPIO and use its platform detect
 # functions.
 
-import platform
 import re
-
-# Platform identification constants.
-UNKNOWN          = 0
-RASPBERRY_PI     = 1
-BEAGLEBONE_BLACK = 2
-
-
-def platform_detect():
-    """Detect if running on the Raspberry Pi or Beaglebone Black and return the
-    platform type.  Will return RASPBERRY_PI, BEAGLEBONE_BLACK, or UNKNOWN."""
-    # Handle Raspberry Pi
-    pi = pi_version()
-    if pi is not None:
-        return RASPBERRY_PI
-
-    # Handle Beaglebone Black
-    # TODO: Check the Beaglebone Black /proc/cpuinfo value instead of reading
-    # the platform.
-    plat = platform.platform()
-    if plat.lower().find('armv7l-with-debian') > -1:
-        return BEAGLEBONE_BLACK
-    elif plat.lower().find('armv7l-with-ubuntu') > -1:
-        return BEAGLEBONE_BLACK
-    elif plat.lower().find('armv7l-with-glibc2.4') > -1:
-        return BEAGLEBONE_BLACK
-    elif plat.lower().find('armv7l-with-arch') > -1:
-        return BEAGLEBONE_BLACK
-
-    # Couldn't figure out the platform, just return unknown.
-    return UNKNOWN
 
 
 def pi_revision():

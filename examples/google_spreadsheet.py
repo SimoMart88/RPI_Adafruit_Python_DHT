@@ -47,8 +47,6 @@ DHT_TYPE = Adafruit_DHT.DHT22
 
 # Example of sensor connected to Raspberry Pi pin 23
 DHT_PIN  = 23
-# Example of sensor connected to Beaglebone Black pin P8_11
-#DHT_PIN  = 'P8_11'
 
 # Google Docs OAuth credential JSON file.  Note that the process for authenticating
 # with Google docs has changed as of ~April 2015.  You _must_ use OAuth2 to log
