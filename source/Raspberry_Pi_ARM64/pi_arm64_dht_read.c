@@ -25,9 +25,9 @@
 #include "pi_arm64_dht_read.h"
 #include "pi_arm64_mmio.h"
 
-// ARM64 processors are significantly faster, so we need a higher timeout value
+// ARM64 processors are significantly faster, so we need a much higher timeout value
 // to accommodate the increased processing speed while maintaining timing accuracy
-#define DHT_MAXCOUNT 80000
+#define DHT_MAXCOUNT 200000
 
 // Number of bit pulses to expect from the DHT.  Note that this is 41 because
 // the first pulse is a constant 50 microsecond pulse, with 40 pulses to represent
@@ -71,8 +71,8 @@ int pi_arm64_dht_read(int type, int pin, float* humidity, float* temperature) {
   // Set pin at input.
   pi_arm64_mmio_set_input(pin);
   // Need a very short delay before reading pins or else value is sometimes still low.
-  // ARM64 is faster, so we need fewer iterations for the same delay
-  for (volatile int i = 0; i < 100; ++i) {
+  // ARM64 is much faster, so we need more iterations for the same timing delay
+  for (volatile int i = 0; i < 1000; ++i) {
   }
 
   // Wait for DHT to pull pin low.
