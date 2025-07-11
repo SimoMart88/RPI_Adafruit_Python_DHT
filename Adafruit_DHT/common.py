@@ -53,7 +53,11 @@ def get_platform():
         from . import Raspberry_Pi_2
         return Raspberry_Pi_2
     elif version == 4:
-        """ARM64 Raspberry Pi 4/5 support"""
+        """ARM64 Raspberry Pi 4 support"""
+        from . import Raspberry_Pi_ARM64
+        return Raspberry_Pi_ARM64
+    elif version == 5:
+        """ARM64 Raspberry Pi 5 support"""
         from . import Raspberry_Pi_ARM64
         return Raspberry_Pi_ARM64
     else:

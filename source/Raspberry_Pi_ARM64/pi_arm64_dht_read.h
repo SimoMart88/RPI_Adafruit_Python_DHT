@@ -22,7 +22,7 @@
 #ifndef PI_ARM64_DHT_READ_H
 #define PI_ARM64_DHT_READ_H
 
-#include "common_dht_read.h"
+#include "../common_dht_read.h"
 
 // Function to read DHT sensor on ARM64 Raspberry Pi.
 int pi_arm64_dht_read(int type, int pin, float* humidity, float* temperature);
