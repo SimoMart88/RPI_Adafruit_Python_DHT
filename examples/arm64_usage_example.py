@@ -24,7 +24,7 @@ def main():
     from Adafruit_DHT import platform_detect
     pi_version = platform_detect.pi_version()
     
-    if pi_version == 4:
+    if pi_version in [4, 5]:
         print("✓ Detected ARM64 Raspberry Pi (Pi 4/5)")
         print("  Using optimized ARM64 driver with:")
         print("  - Enhanced peripheral base address detection")

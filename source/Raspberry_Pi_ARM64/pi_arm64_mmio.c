@@ -61,7 +61,7 @@ int pi_arm64_mmio_init(void) {
       gpio_base = peri_base + GPIO_BASE_OFFSET;
     }
 
-    int fd;
+    int fd = -1;
     
     // On newer systems, /dev/gpiomem should exist and be user-accessible
     if (access("/dev/gpiomem", F_OK) != -1) {
@@ -69,22 +69,30 @@ int pi_arm64_mmio_init(void) {
       if (fd != -1) {
         // For /dev/gpiomem, offset should be 0 as it maps directly to GPIO
         pi_arm64_mmio_gpio = (uint32_t*)mmap(NULL, GPIO_LENGTH, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+        close(fd);
       }
-    } else {
+    } 
+    
+    // If /dev/gpiomem failed or doesn't exist, try /dev/mem
+    if (fd == -1 || pi_arm64_mmio_gpio == MAP_FAILED) {
+      if (fd != -1) {
+        // Close the previous fd if it was opened but mmap failed
+        close(fd);
+      }
+      // Reset the pointer if mmap failed
+      pi_arm64_mmio_gpio = NULL;
+      
       // Fallback to /dev/mem (requires root)
       fd = open("/dev/mem", O_RDWR | O_SYNC);
-      if (fd != -1) {
-        // For /dev/mem, use the calculated GPIO base address
-        pi_arm64_mmio_gpio = (uint32_t*)mmap(NULL, GPIO_LENGTH, PROT_READ | PROT_WRITE, MAP_SHARED, fd, gpio_base);
+      if (fd == -1) {
+        // Error opening device file
+        return MMIO_ERROR_DEVMEM;
       }
+      
+      // For /dev/mem, use the calculated GPIO base address
+      pi_arm64_mmio_gpio = (uint32_t*)mmap(NULL, GPIO_LENGTH, PROT_READ | PROT_WRITE, MAP_SHARED, fd, gpio_base);
+      close(fd);
     }
-    
-    if (fd == -1) {
-      // Error opening device file
-      return MMIO_ERROR_DEVMEM;
-    }
-    
-    close(fd);
     
     if (pi_arm64_mmio_gpio == MAP_FAILED) {
       // Don't save the result if the memory mapping failed.
