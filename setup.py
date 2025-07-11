@@ -32,7 +32,7 @@ extensions = []
 if not is_binary_install():
     print('Skipped loading platform-specific extensions for Adafruit_DHT (we are generating a cross-platform source distribution).')
 else:
-    # Get the Pi version (1 or 2)
+    # Get the Pi version (1, 2, 3, 4 or 5 for ARM64)
     pi_version = platform_detect.pi_version()
 
     # Build the right extension depending on the Pi version.
@@ -49,6 +49,16 @@ else:
     elif pi_version == 3:
         extensions.append(Extension("Adafruit_DHT.Raspberry_Pi_2_Driver",
                                     ["source/_Raspberry_Pi_2_Driver.c", "source/common_dht_read.c", "source/Raspberry_Pi_2/pi_2_dht_read.c", "source/Raspberry_Pi_2/pi_2_mmio.c"],
+                                    libraries=['rt'],
+                                    extra_compile_args=['-std=gnu99']))
+    elif pi_version == 4:
+        extensions.append(Extension("Adafruit_DHT.Raspberry_Pi_ARM64_Driver",
+                                    ["source/_Raspberry_Pi_ARM64_Driver.c", "source/common_dht_read.c", "source/Raspberry_Pi_ARM64/pi_arm64_dht_read.c", "source/Raspberry_Pi_ARM64/pi_arm64_mmio.c"],
+                                    libraries=['rt'],
+                                    extra_compile_args=['-std=gnu99']))
+    elif pi_version == 5:
+        extensions.append(Extension("Adafruit_DHT.Raspberry_Pi_ARM64_Driver",
+                                    ["source/_Raspberry_Pi_ARM64_Driver.c", "source/common_dht_read.c", "source/Raspberry_Pi_ARM64/pi_arm64_dht_read.c", "source/Raspberry_Pi_ARM64/pi_arm64_mmio.c"],
                                     libraries=['rt'],
                                     extra_compile_args=['-std=gnu99']))
     else:

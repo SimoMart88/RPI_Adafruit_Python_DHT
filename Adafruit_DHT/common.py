@@ -52,6 +52,10 @@ def get_platform():
         """Use Pi 2 driver even though running on Pi 3"""
         from . import Raspberry_Pi_2
         return Raspberry_Pi_2
+    elif version == 4:
+        """ARM64 Raspberry Pi 4/5 support"""
+        from . import Raspberry_Pi_ARM64
+        return Raspberry_Pi_ARM64
     else:
         warnings.warn("Could not detect Raspberry Pi version. Test driver will be used")
         from . import Test
