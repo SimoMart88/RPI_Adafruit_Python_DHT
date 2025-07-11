@@ -52,16 +52,26 @@ else:
                                     libraries=['rt'],
                                     extra_compile_args=['-std=gnu99']))
     elif pi_version == 4:
+        # Build both ARM64 driver and Pi 2 driver as fallback
         extensions.append(Extension("Adafruit_DHT.Raspberry_Pi_ARM64_Driver",
                                     ["source/_Raspberry_Pi_ARM64_Driver.c", "source/common_dht_read.c", "source/Raspberry_Pi_ARM64/pi_arm64_dht_read.c", "source/Raspberry_Pi_ARM64/pi_arm64_mmio.c"],
                                     libraries=['rt'],
                                     include_dirs=['source'],
                                     extra_compile_args=['-std=gnu99']))
+        extensions.append(Extension("Adafruit_DHT.Raspberry_Pi_2_Driver",
+                                    ["source/_Raspberry_Pi_2_Driver.c", "source/common_dht_read.c", "source/Raspberry_Pi_2/pi_2_dht_read.c", "source/Raspberry_Pi_2/pi_2_mmio.c"],
+                                    libraries=['rt'],
+                                    extra_compile_args=['-std=gnu99']))
     elif pi_version == 5:
+        # Build both ARM64 driver and Pi 2 driver as fallback
         extensions.append(Extension("Adafruit_DHT.Raspberry_Pi_ARM64_Driver",
                                     ["source/_Raspberry_Pi_ARM64_Driver.c", "source/common_dht_read.c", "source/Raspberry_Pi_ARM64/pi_arm64_dht_read.c", "source/Raspberry_Pi_ARM64/pi_arm64_mmio.c"],
                                     libraries=['rt'],
                                     include_dirs=['source'],
+                                    extra_compile_args=['-std=gnu99']))
+        extensions.append(Extension("Adafruit_DHT.Raspberry_Pi_2_Driver",
+                                    ["source/_Raspberry_Pi_2_Driver.c", "source/common_dht_read.c", "source/Raspberry_Pi_2/pi_2_dht_read.c", "source/Raspberry_Pi_2/pi_2_mmio.c"],
+                                    libraries=['rt'],
                                     extra_compile_args=['-std=gnu99']))
     else:
         print('Could not detect if running on the Raspberry Pi. Test driver will be used')
