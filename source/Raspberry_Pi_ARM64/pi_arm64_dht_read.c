@@ -21,13 +21,14 @@
 // SOFTWARE.
 #include <stdbool.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "pi_arm64_dht_read.h"
 #include "pi_arm64_mmio.h"
 
-// ARM64 processors are significantly faster, so we need a much higher timeout value
-// to accommodate the increased processing speed while maintaining timing accuracy
-#define DHT_MAXCOUNT 200000
+// ARM64 processors are significantly faster, so we need an extremely high timeout value
+// and different timing approach to accommodate the increased processing speed
+#define DHT_MAXCOUNT 500000
 
 // Number of bit pulses to expect from the DHT.  Note that this is 41 because
 // the first pulse is a constant 50 microsecond pulse, with 40 pulses to represent
@@ -71,9 +72,8 @@ int pi_arm64_dht_read(int type, int pin, float* humidity, float* temperature) {
   // Set pin at input.
   pi_arm64_mmio_set_input(pin);
   // Need a very short delay before reading pins or else value is sometimes still low.
-  // ARM64 is much faster, so we need more iterations for the same timing delay
-  for (volatile int i = 0; i < 1000; ++i) {
-  }
+  // ARM64 is much faster, so use a proper microsecond delay
+  usleep(40);
 
   // Wait for DHT to pull pin low.
   uint32_t count = 0;
@@ -82,6 +82,10 @@ int pi_arm64_dht_read(int type, int pin, float* humidity, float* temperature) {
       // Timeout waiting for response.
       set_default_priority();
       return DHT_ERROR_TIMEOUT;
+    }
+    // Add tiny delay to prevent loop from running too fast on ARM64
+    if (count % 1000 == 0) {
+      usleep(1);
     }
   }
 
@@ -94,6 +98,10 @@ int pi_arm64_dht_read(int type, int pin, float* humidity, float* temperature) {
         set_default_priority();
         return DHT_ERROR_TIMEOUT;
       }
+      // Add tiny delay to prevent loop from running too fast on ARM64
+      if (pulseCounts[i] % 1000 == 0) {
+        usleep(1);
+      }
     }
     // Count how long pin is high and store in pulseCounts[i+1]
     while (pi_arm64_mmio_input(pin)) {
@@ -101,6 +109,10 @@ int pi_arm64_dht_read(int type, int pin, float* humidity, float* temperature) {
         // Timeout waiting for response.
         set_default_priority();
         return DHT_ERROR_TIMEOUT;
+      }
+      // Add tiny delay to prevent loop from running too fast on ARM64
+      if (pulseCounts[i+1] % 1000 == 0) {
+        usleep(1);
       }
     }
   }
